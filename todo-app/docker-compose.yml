@@ -2,7 +2,7 @@ services:
   app:
     image: todo-frontend-live
     environment:
-      - REACT_APP_BACKEND_URL=http://localhost:3001/
+      - REACT_APP_BACKEND_URL=/api/
     build:
       context: ./todo-frontend/
     ports:
@@ -24,7 +24,7 @@ services:
       MONGO_INITDB_DATABASE: the_database
     volumes:
       - ./todo-backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
-      - mongo_data:/data/db
+      - ./todo-backend/mongo_data:/data/db
   redis:
     image: redis
     ports:
@@ -47,6 +47,3 @@ services:
       - ./todo-backend:/usr/src/app
     ports:
       - 3001:3001
-    container_name: todo-backend
-volumes:
-  mongo_data:
