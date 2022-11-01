@@ -1,36 +1,30 @@
 services:
   app:
-    image: todo-frontend
+    image: todo-frontend-live
     environment:
       - REACT_APP_BACKEND_URL=http://localhost:3001/
     build:
-      context: ./todo-frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ./todo-frontend:/usr/src/app
+      context: ./todo-frontend/
     ports:
-      - 3000:3000
-    container_name: todo-frontend
+      - 3000:80
   nginx:
     image: nginx:1.20.1
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 8080:80
-    container_name: reverse-proxy2
     depends_on:
-      - app # wait for the frontend container to be started
+      - app
+      - server
   mongo:
     image: mongo
-    ports:
-     - 3456:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: the_database
     volumes:
       - ./todo-backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
-      - ./todo-backend/mongo_data:/data/db
+      - mongo_data:/data/db
   redis:
     image: redis
     ports:
@@ -44,13 +38,15 @@ services:
       - mongo
       - redis
     environment:
+      - NODE_ENV=production
       - MONGO_URL=mongodb://the_username:the_password@mongodb:27017/the_database
       - REDIS_URL=redis://redis:6379
     build:
-      context: ./todo-backend
-      dockerfile: Dockerfile
+      context: ./todo-backend/
     volumes:
       - ./todo-backend:/usr/src/app
     ports:
       - 3001:3001
     container_name: todo-backend
+volumes:
+  mongo_data:
