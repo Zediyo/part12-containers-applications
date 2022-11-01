@@ -1,0 +1,46 @@
+services:
+  app:
+    image: phone-front-dev
+    volumes:
+      - ./phone-frontend:/usr/src/app
+    build:
+      context: ./phone-frontend/
+      dockerfile: dev.Dockerfile
+    environment:
+      - REACT_APP_BACKEND_URL=/api/
+    ports:
+      - 3000:3000
+  server:
+    image: phone-back-dev
+    volumes:
+      - ./phone-backend:/usr/src/app
+    build:
+      context: ./phone-backend/
+      dockerfile: dev.Dockerfile
+    environment:
+      - MONGODB_URI=mongodb://the_username:the_password@mongo:27017/the_database
+    ports:
+      - 3001:3001
+    depends_on:
+      - mongo
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - app # wait for the frontend container to be started
+      - server
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: the_database
+    volumes:
+      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - mongo_data:/data/db
+volumes:
+  mongo_data:
