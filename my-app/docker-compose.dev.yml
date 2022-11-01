@@ -19,6 +19,7 @@ services:
       dockerfile: dev.Dockerfile
     environment:
       - MONGODB_URI=mongodb://the_username:the_password@mongo:27017/the_database
+      - PORT=3001
     ports:
       - 3001:3001
     depends_on:
@@ -40,7 +41,5 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: the_database
     volumes:
-      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
-      - mongo_data:/data/db
-volumes:
-  mongo_data:
+      - ./phone-backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./phone-backend/mongo_data:/data/db
