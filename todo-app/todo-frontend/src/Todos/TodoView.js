@@ -34,6 +34,8 @@ const TodoView = () => {
     refreshTodos()
   }
 
+  console.log(process.env.REACT_APP_BACKEND_URL)
+
   return (
     <>
       <h1>Todos</h1>
