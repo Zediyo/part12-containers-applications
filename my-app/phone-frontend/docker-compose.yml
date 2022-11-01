@@ -1,0 +1,9 @@
+services:
+  app:
+    image: phone-front-live
+    build:
+      context: .
+    environment:
+      - REACT_APP_BACKEND_URL=/api/
+    ports:
+      - 3005:3005

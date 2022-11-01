@@ -1,11 +1,12 @@
 FROM node:16 AS build-stage
 
 WORKDIR /usr/src/app
-ENV REACT_APP_BACKEND_URL=/api/
 
 COPY . .
 
-RUN npm ci --omit=dev
+ENV REACT_APP_BACKEND_URL=/api/
+
+RUN npm ci
 
 RUN npm run build
 
